@@ -1,6 +1,6 @@
 include $(ECOS_PRODUCT_DIR)/config.mk
 
-BL1.bin: start.o led.o
+BL1.bin: start.o led.o uart.o main.o
 	$(LD) -TBL1.lds -o BL1.elf $^
 	$(OBJCOPY) -O binary BL1.elf BL1.bin
 	$(OBJDUMP) -D BL1.elf > BL1_elf.dis
@@ -8,11 +8,10 @@ BL1.bin: start.o led.o
 	./mkmini210 BL1.bin bootloader.bin
 	
 %.o : %.S
-	echo "$(CC)"
-	$(CC) -o $@ $< -c 
+	$(CC) -o $@ $< -c -nostdlib 
 
 %.o : %.c
-	$(CC) -o $@ $< -c 
+	$(CC) -o $@ $< -c -nostdlib
 
 clean:
 	rm *.o *.elf *.bin *.dis mkmini210 -f
